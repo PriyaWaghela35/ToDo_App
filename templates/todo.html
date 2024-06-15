@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo APP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+        }
+        .todo-input {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .todo-input input {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+        }
+        .todo-input button {
+            padding: 10px;
+            background-color: coral;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .todo-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .todo-item.completed {
+            text-decoration: line-through;
+        }
+        .todo-item button {
+            margin-left: 10px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ToDos</h1>
+        <div class="todo-input">
+            <input type="text" id="task-input" placeholder="Enter Task">
+            <button onclick="addTodo()">ADD Todo</button>
+        </div>
+        <h2>To-do</h2>
+        <ul class="todo-list" id="todo-list"></ul>
+    </div>
+    <script>
+        const tasks = [
+            { id: '1', task: 'Sample Todo', completed: true },
+            { id: '2', task: 'First Task Todo', completed: false },
+            { id: '3', task: 'Second Task', completed: false }
+        ];
+        
+        function renderTodos() {
+            const todoList = document.getElementById('todo-list');
+            todoList.innerHTML = '';
+            tasks.forEach(task => {
+                const taskItem = document.createElement('li');
+                taskItem.className = 'todo-item' + (task.completed ? ' completed' : '');
+                taskItem.innerHTML = `
+                    <span>${task.task}</span>
+                    <div>
+                        <button onclick="checkTask('${task.id}')">Check</button>
+                        <button onclick="editTask('${task.id}')">Edit</button>
+                        <button onclick="deleteTask('${task.id}')">Delete</button>
+                    </div>
+                `;
+                todoList.appendChild(taskItem);
+            });
+        }
+        
+        function addTodo() {
+            const taskInput = document.getElementById('task-input');
+            if (taskInput.value.trim()) {
+                const newTask = {
+                    id: Date.now().toString(),
+                    task: taskInput.value.trim(),
+                    completed: false
+                };
+                tasks.push(newTask);
+                taskInput.value = '';
+                renderTodos();
+            }
+        }
+        
+        function checkTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                renderTodos();
+            }
+        }
+        
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                const newTask = prompt('Edit task', task.task);
+                if (newTask) {
+                    task.task = newTask.trim();
+                    renderTodos();
+                }
+            }
+        }
+        
+        function deleteTask(id) {
+            const taskIndex = tasks.findIndex(t => t.id === id);
+            if (taskIndex > -1) {
+                tasks.splice(taskIndex, 1);
+                renderTodos();
+            }
+        }
+        
+        renderTodos();
+    </script>
+</body>
+</html>
